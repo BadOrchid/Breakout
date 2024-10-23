@@ -20,7 +20,7 @@ void GameManager::initialize()
     _paddle = new Paddle(_window);
     _brickManager = new BrickManager(_window, this);
     _messagingSystem = new MessagingSystem(_window);
-    _ball = new Ball(_window, 400.0f, this); 
+    _ball = new Ball(_window, 400.0f, 20.0f, this); 
     _powerupManager = new PowerupManager(_window, _paddle, _ball);
     _ui = new UI(_window, _lives, this);
 
@@ -29,6 +29,9 @@ void GameManager::initialize()
 
     _shakeStrength = 5.0f; //Strength of screenshake
     _shakeTime = 0.1f; //Duration of screenshake
+
+    _powerupFreq = 10.0f; //Parameter for frequency of powerups
+    _powerupChance = 700; //Parameter for chance of powerup to spawn
 }
 
 void GameManager::update(float dt)
@@ -74,7 +77,7 @@ void GameManager::update(float dt)
     _time += dt;
 
 
-    if (_time > _timeLastPowerupSpawned + POWERUP_FREQUENCY && rand()%700 == 0)      // TODO parameterise
+    if (_time > _timeLastPowerupSpawned + _powerupFreq && rand()%_powerupChance == 0)
     {
         _powerupManager->spawnPowerup();
         _timeLastPowerupSpawned = _time;
@@ -86,7 +89,6 @@ void GameManager::update(float dt)
     _paddle->update(dt);
     _ball->update(dt);
     _powerupManager->update(dt);
-
     shakeScreen(dt);
 }
 
@@ -94,21 +96,22 @@ void GameManager::loseLife()
 {
     _lives--;
     _ui->lifeLost(_lives);
-
-    // TODO screen shake.
     
     _shakeLeft = _shakeTime; //every time life is lost, reset the time left for screen to shake
 }
 
 void GameManager::shakeScreen(float dt)
 {
+    sf::Vector2f oldCentre = _screenView.getCenter();
     if (_shakeLeft > 0.0f) {
+        //Reduce time left
         _shakeLeft -= dt;
 
         // Generate random shake values in the range of the shake strength var
         float offsetX = (float(rand()) / RAND_MAX) * 2.0f * _shakeStrength - _shakeStrength;
 
         //Add the value to the view's center
+        
         _screenView.setCenter(_screenView.getCenter() + sf::Vector2f(offsetX, 0.0f));
 
         //Set the updated view to the window
@@ -117,7 +120,7 @@ void GameManager::shakeScreen(float dt)
     }
     else {
         //Reset the view to the unshaken perspective
-        _screenView.setCenter(_window->getSize().x / 2, _window->getSize().y / 2);
+        _screenView.setCenter(oldCentre.x, oldCentre.y);
         _window->setView(_screenView);
     }
 }

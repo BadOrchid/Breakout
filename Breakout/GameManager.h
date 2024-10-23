@@ -34,9 +34,14 @@ private:
     float _pauseHold;
     float _time;
     float _timeLastPowerupSpawned;
+
     float _shakeTime;
     float _shakeStrength;
     float _shakeLeft;
+    
+    float _powerupFreq;
+    int _powerupChance;
+
     int _lives;
     bool _levelComplete;
     std::pair<POWERUPS, float> _powerupInEffect;
@@ -55,5 +60,4 @@ private:
     UI* _ui;
 
     static constexpr float PAUSE_TIME_BUFFER = 0.5f;
-    static constexpr float POWERUP_FREQUENCY = 7.5f;    // time between minimum powerup spawn
 };
