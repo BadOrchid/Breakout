@@ -22,6 +22,12 @@ UI::UI(sf::RenderWindow* window, int lives, GameManager* gameManager)
 	_powerupText.setFillColor(sf::Color::Cyan);
 	_font.loadFromFile("font/montS.ttf");
 	_powerupText.setFont(_font);
+
+	_pointsText.setCharacterSize(30);
+	_pointsText.setPosition(50, 50); //Top Left cornerish but out the way of points
+	_pointsText.setFillColor(sf::Color::White);
+	_pointsText.setFont(_font); 
+	_pointsText.setString("Points: 0");
 }
 
 UI::~UI()
@@ -67,6 +73,10 @@ void UI::updatePowerupText(std::pair<POWERUPS, float> powerup)
 	}
 }
 
+void UI::updatePointsText(int points) {
+	_pointsText.setString("Points: " + std::to_string(points));
+}
+
 void UI::lifeLost(int lives)
 {
 	_lives[_lives.size() - 1 - lives].setFillColor(sf::Color::Transparent);
@@ -75,6 +85,7 @@ void UI::lifeLost(int lives)
 void UI::render()
 {
 	_window->draw(_powerupText);
+	_window->draw(_pointsText);
 	for (sf::CircleShape life : _lives)
 	{
 		_window->draw(life);

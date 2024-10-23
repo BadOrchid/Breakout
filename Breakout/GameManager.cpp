@@ -20,7 +20,7 @@ void GameManager::initialize()
     _paddle = new Paddle(_window);
     _brickManager = new BrickManager(_window, this);
     _messagingSystem = new MessagingSystem(_window);
-    _ball = new Ball(_window, 400.0f, 20.0f, this); 
+    _ball = new Ball(_window, 400.0f, this); 
     _powerupManager = new PowerupManager(_window, _paddle, _ball);
     _ui = new UI(_window, _lives, this);
 
@@ -38,6 +38,7 @@ void GameManager::update(float dt)
 {
     _powerupInEffect = _powerupManager->getPowerupInEffect();
     _ui->updatePowerupText(_powerupInEffect);
+    _ui->updatePointsText(_points);
     _powerupInEffect.second -= dt;
     
 
@@ -98,6 +99,11 @@ void GameManager::loseLife()
     _ui->lifeLost(_lives);
     
     _shakeLeft = _shakeTime; //every time life is lost, reset the time left for screen to shake
+}
+
+void GameManager::addPoints(int points)
+{
+    _points += points;
 }
 
 void GameManager::shakeScreen(float dt)

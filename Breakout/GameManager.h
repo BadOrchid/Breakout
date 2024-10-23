@@ -20,6 +20,8 @@ public:
     void levelComplete();
     void powerupEffect(POWERUPS pu, float t);
 
+    void addPoints(int points);
+
     void shakeScreen(float dt);
 
     Paddle* getPaddle() const;
@@ -44,6 +46,9 @@ private:
 
     int _lives;
     bool _levelComplete;
+
+    int _points;
+
     std::pair<POWERUPS, float> _powerupInEffect;
 
     sf::Font _font;
