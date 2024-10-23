@@ -26,6 +26,9 @@ void GameManager::initialize()
 
     // Create bricks
     _brickManager->createBricks(5, 10, 80.0f, 30.0f, 5.0f);
+
+    _shakeStrength = 5.0f; //Strength of screenshake
+    _shakeTime = 0.1f; //Duration of screenshake
 }
 
 void GameManager::update(float dt)
@@ -83,6 +86,8 @@ void GameManager::update(float dt)
     _paddle->update(dt);
     _ball->update(dt);
     _powerupManager->update(dt);
+
+    shakeScreen(dt);
 }
 
 void GameManager::loseLife()
@@ -91,6 +96,30 @@ void GameManager::loseLife()
     _ui->lifeLost(_lives);
 
     // TODO screen shake.
+    
+    _shakeLeft = _shakeTime; //every time life is lost, reset the time left for screen to shake
+}
+
+void GameManager::shakeScreen(float dt)
+{
+    if (_shakeLeft > 0.0f) {
+        _shakeLeft -= dt;
+
+        // Generate random shake values in the range of the shake strength var
+        float offsetX = (float(rand()) / RAND_MAX) * 2.0f * _shakeStrength - _shakeStrength;
+
+        //Add the value to the view's center
+        _screenView.setCenter(_screenView.getCenter() + sf::Vector2f(offsetX, 0.0f));
+
+        //Set the updated view to the window
+        _window->setView(_screenView);
+
+    }
+    else {
+        //Reset the view to the unshaken perspective
+        _screenView.setCenter(_window->getSize().x / 2, _window->getSize().y / 2);
+        _window->setView(_screenView);
+    }
 }
 
 void GameManager::render()
@@ -110,6 +139,7 @@ void GameManager::levelComplete()
 
 sf::RenderWindow* GameManager::getWindow() const { return _window; }
 UI* GameManager::getUI() const { return _ui; }
+
 Paddle* GameManager::getPaddle() const { return _paddle; }
 BrickManager* GameManager::getBrickManager() const { return _brickManager; }
 PowerupManager* GameManager::getPowerupManager() const { return _powerupManager; }

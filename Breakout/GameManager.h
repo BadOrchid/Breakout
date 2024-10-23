@@ -20,6 +20,8 @@ public:
     void levelComplete();
     void powerupEffect(POWERUPS pu, float t);
 
+    void shakeScreen(float dt);
+
     Paddle* getPaddle() const;
     BrickManager* getBrickManager() const;
     PowerupManager* getPowerupManager() const;
@@ -32,12 +34,17 @@ private:
     float _pauseHold;
     float _time;
     float _timeLastPowerupSpawned;
+    float _shakeTime;
+    float _shakeStrength;
+    float _shakeLeft;
     int _lives;
     bool _levelComplete;
     std::pair<POWERUPS, float> _powerupInEffect;
 
     sf::Font _font;
     sf::Text _masterText;
+
+    sf::View _screenView;
 
     sf::RenderWindow* _window;
     Paddle* _paddle;
